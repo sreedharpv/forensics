@@ -10,10 +10,20 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @RestControllerAdvice
 public class ExceptionAdvice extends ResponseEntityExceptionHandler {
-    @ExceptionHandler(value = {AuthenticationException.class})
 
+    @ExceptionHandler(value = {AuthenticationException.class})
     protected ResponseEntity<ErrorResponse> handleAuthenticationException(AuthenticationException ex, WebRequest request) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(HttpStatus.UNAUTHORIZED.value(), ex.getMessage()));
+    }
+
+    @ExceptionHandler(value = {ValidationException.class})
+    protected ResponseEntity<ErrorResponse> handleValidationException(ValidationException ex, WebRequest request) {
+        return ResponseEntity.status(HttpStatus.OK).body(new ErrorResponse(ex.getErrorCode(), ex.getErrorMessage()));
+    }
+
+    @ExceptionHandler(value = {ForensicApplicationException.class})
+    protected ResponseEntity<ErrorResponse> handleForensicApplicationException(ForensicApplicationException ex, WebRequest request) {
+        return ResponseEntity.status(HttpStatus.OK).body(new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage()));
     }
 
 }
