@@ -39,7 +39,6 @@ public class ForensicsDetailsControllerTest {
     LocationResponse locationResponse;
 
     @BeforeAll
-    //@TestInstance(TestInstance.Lifecycle.PER_CLASS)//
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         this.mockMvc = MockMvcBuilders.standaloneSetup(forensicsDetailsController).build();
