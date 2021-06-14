@@ -75,10 +75,11 @@ public class ForensicsDetailsController extends AbstractForensicsController {
                                                      @RequestHeader(HttpHeaders.AUTHORIZATION) String authToken
     ) throws ForensicApplicationException, ValidationException {
         LOG.info("Start Directions API {}", LOCATIONS);
-
+        LOG.info("noOfResourceUtilisation {}", noOfResourceUtilisation);
         if(noOfResourceUtilisation >= 5) {
             throw new ValidationException(HttpStatus.TOO_MANY_REQUESTS.value(), "You have exceeded the maximum allowed requests.");
         }
+        noOfResourceUtilisation++;
         return ResponseEntity.ok(locationService.getLocation(xCoordinate, yCoordinate));
     }
 
