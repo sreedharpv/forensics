@@ -6,9 +6,9 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.io.Serializable;
+import java.util.List;
 
-@Setter
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -17,6 +17,6 @@ public class DirectionsResponse implements Serializable {
     private static final long serialVersionUID = -1223234234531234324L;
 
     @JsonProperty
-    String position;
+    List<Directions> positions;
 
 }

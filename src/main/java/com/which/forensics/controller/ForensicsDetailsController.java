@@ -51,7 +51,7 @@ public class ForensicsDetailsController extends AbstractForensicsController {
                                                          @ApiParam(value = "API to get directions")
                                                          @PathVariable("email") String email,
                                                          @RequestHeader(HttpHeaders.AUTHORIZATION) String authToken
-    ) {
+    ) throws ForensicApplicationException {
         LOG.info("Start Directions API {}", DIRECTIONS);
         return ResponseEntity.ok(directionsService.getDirections());
     }

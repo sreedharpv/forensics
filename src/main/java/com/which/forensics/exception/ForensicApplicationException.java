@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ForensicApplicationException extends Exception {
+public class ForensicApplicationException extends RuntimeException {
     String errorMessage;
 
     public ForensicApplicationException(String message, String errorMessage) {

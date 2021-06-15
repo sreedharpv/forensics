@@ -15,6 +15,12 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     private UserService userService;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    private static final String[] WHITE_LIST_URLS = {
+            "/swagger-resources/**",
+            "/swagger-ui.html",
+            "/v2/api-docs"
+    };
+
     public WebSecurity(UserDetailsService userService, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userService = (UserService) userService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
@@ -22,7 +28,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
-                .authorizeRequests()
+                .authorizeRequests().antMatchers(WHITE_LIST_URLS).permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()

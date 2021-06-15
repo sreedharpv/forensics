@@ -1,5 +1,6 @@
 package com.which.forensics.controller;
 
+import com.which.forensics.domain.Directions;
 import com.which.forensics.domain.DirectionsResponse;
 import com.which.forensics.domain.LocationResponse;
 import com.which.forensics.service.DirectionsService;
@@ -18,6 +19,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -49,7 +53,7 @@ public class ForensicsDetailsControllerTest {
     @Test
     public void testDirectionsAPI_returnSuccess() throws Exception {
         //given
-        given(directionsService.getDirections()).willReturn(new DirectionsResponse("1,0"));
+        given(directionsService.getDirections()).willReturn(new DirectionsResponse(getDirectionsList()));
         //when
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/sridhar@gmail.com/directions")
                 .header(HttpHeaders.AUTHORIZATION, "asdfasd")
@@ -61,10 +65,16 @@ public class ForensicsDetailsControllerTest {
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
     }
 
+    List<Directions> getDirectionsList() {
+        List<Directions> list = new ArrayList<Directions>();
+        list.add(new Directions("1","0"));
+        return list;
+    }
+
     @Test
     public void testDirectionsAPIwith_NoEmail() throws Exception {
         //given
-        given(directionsService.getDirections()).willReturn(new DirectionsResponse("1,0"));
+        given(directionsService.getDirections()).willReturn(new DirectionsResponse(getDirectionsList()));
         //when
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("//directions")
                 .header(HttpHeaders.AUTHORIZATION, "asdfasd")
