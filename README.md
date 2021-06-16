@@ -1,5 +1,11 @@
 # Forensics application
 
+### Assumption: 
+* Person's directions found in the map. Considering that, directions has been taken in a static CSV data file
+* Implemented Spring Security to identify the valid emailid
+* Directions API can call freely, however directions data would be same for any number of 'directions' calls. Hence loaded the data once during server startup and kept in inmemory to avoid further downstream API calls
+* Followed production ready coding standards 
+
 ## Step 1:
 Require to install Java Version 11
 
