@@ -37,7 +37,7 @@ class ForensicsApplicationIntegrationTests {
     void whenLocationRequestValid_returnSuccess() throws Exception {
 
         //given
-        //given(locationDao.getLocations(anyString(), anyString())).willReturn(any(Locations.class));
+
         //when
         RequestBuilder request = MockMvcRequestBuilders.get("/sridhar@abc.com/location/xValue/yValue")
                 .header(HttpHeaders.AUTHORIZATION, "asdfasd")
@@ -50,10 +50,26 @@ class ForensicsApplicationIntegrationTests {
     }
 
     @Test
+    void whenLocationRequestInValid_returnFail() throws Exception {
+
+        //given
+
+        //when
+        RequestBuilder request = MockMvcRequestBuilders.get("//location/xValue/yValue")
+                .header(HttpHeaders.AUTHORIZATION, "asdfasd")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        MockHttpServletResponse response = mockMvc.perform(request).andReturn().getResponse();
+        //then
+
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
+    }
+
+    @Test
     void whenDirectionRequestValid_returnSuccess() throws Exception {
 
         //given
-        //given(directionsDao.getDirections()).willReturn(any(Directions.class));
+
         //when
         RequestBuilder request = MockMvcRequestBuilders.get("/sridhar@abc.com/directions")
                 .header(HttpHeaders.AUTHORIZATION, "asdfasd")
@@ -63,6 +79,22 @@ class ForensicsApplicationIntegrationTests {
         //then
 
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    @Test
+    void whenDirectionRequestInValid_returnFail() throws Exception {
+
+        //given
+
+        //when
+        RequestBuilder request = MockMvcRequestBuilders.get("/sridhar@abc.com//")
+                .header(HttpHeaders.AUTHORIZATION, "asdfasd")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        MockHttpServletResponse response = mockMvc.perform(request).andReturn().getResponse();
+        //then
+
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
 }

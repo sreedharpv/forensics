@@ -16,6 +16,9 @@ public class DirectionsServiceImpl implements DirectionsService {
     @Autowired
     LoadDirectionsMap loadDirectionsMap;
 
+    /*
+    * Gets the directions of the person
+    * */
     @Override
     public DirectionsResponse getDirections() throws ForensicApplicationException {
         return loadDirectionsMap.loadDirections();

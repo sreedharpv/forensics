@@ -3,8 +3,6 @@ package com.which.forensics.entity;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-@Setter
-@Getter
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

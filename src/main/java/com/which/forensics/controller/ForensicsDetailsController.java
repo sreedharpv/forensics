@@ -1,5 +1,6 @@
 package com.which.forensics.controller;
 
+import com.which.forensics.component.InMemoryCache;
 import com.which.forensics.domain.DirectionsResponse;
 import com.which.forensics.domain.LocationResponse;
 import com.which.forensics.exception.ForensicApplicationException;
@@ -32,11 +33,11 @@ public class ForensicsDetailsController extends AbstractForensicsController {
 
     @Autowired
     DirectionsService directionsService;
-
     @Autowired
     LocationService locationService;
+    @Autowired
+    InMemoryCache inMemoryCache;
 
-    static long noOfResourceUtilisation = 0;
 
     /**
      * Method to return directions
@@ -75,11 +76,22 @@ public class ForensicsDetailsController extends AbstractForensicsController {
                                                      @RequestHeader(HttpHeaders.AUTHORIZATION) String authToken
     ) throws ForensicApplicationException, ValidationException {
         LOG.info("Start Directions API {}", LOCATIONS);
-        LOG.info("noOfResourceUtilisation {}", noOfResourceUtilisation);
-        if(noOfResourceUtilisation >= 5) {
+        Integer noOfAPICalls = 0;
+
+        // get the cached variable
+        if(inMemoryCache.size() > 0) {
+            noOfAPICalls = (Integer) inMemoryCache.get("noOfResourcecount");
+        }
+        //Cache expires after 5 mins
+        inMemoryCache.add("noOfResourcecount", ++noOfAPICalls, 300000L);
+
+        LOG.info("noOfCalls::{}, Size::{}", noOfAPICalls, inMemoryCache.size());
+
+        //Return error message when no of API calls reached to 5 times.
+        if(noOfAPICalls > 5) {
             throw new ValidationException(HttpStatus.TOO_MANY_REQUESTS.value(), "You have exceeded the maximum allowed requests.");
         }
-        noOfResourceUtilisation++;
+
         return ResponseEntity.ok(locationService.getLocation(xCoordinate, yCoordinate));
     }
 

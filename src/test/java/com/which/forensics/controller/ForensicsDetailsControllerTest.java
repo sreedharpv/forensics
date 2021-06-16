@@ -1,5 +1,6 @@
 package com.which.forensics.controller;
 
+import com.which.forensics.component.InMemoryCache;
 import com.which.forensics.domain.Directions;
 import com.which.forensics.domain.DirectionsResponse;
 import com.which.forensics.domain.LocationResponse;
@@ -37,6 +38,8 @@ public class ForensicsDetailsControllerTest {
     DirectionsService directionsService;
     @Mock
     LocationService locationService;
+    @Mock
+    InMemoryCache inMemoryCache;
 
     private MockMvc mockMvc;
     DirectionsResponse directionsResponse;

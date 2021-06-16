@@ -1,7 +1,6 @@
 package com.which.forensics.service;
 
 import com.which.forensics.domain.DirectionsResponse;
-import com.which.forensics.exception.ForensicApplicationException;
 import com.which.forensics.service.impl.LoadDirectionsMapImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -40,7 +39,8 @@ public class LoadDirectionsMapImplTest {
         Resource resource = Mockito.mock(Resource.class);
         //Given
         given(resourceLoader.getResource(anyString())).willReturn(resource);
-        InputStream inputStream = new ByteArrayInputStream("line1,line11\nline2,line21\nline3,line31".getBytes());
+        InputStream inputStream = new ByteArrayInputStream(("line1,line11,line13,line14" +
+                "\nline2,line21,line22,line23\nline3,line31,line3,line31").getBytes());
         given(resource.getInputStream()).willReturn(inputStream);
         loadDirectionsMap.init();
         DirectionsResponse response = loadDirectionsMap.loadDirections();
