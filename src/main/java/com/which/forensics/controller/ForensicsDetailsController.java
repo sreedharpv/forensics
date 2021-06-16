@@ -26,8 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
 import java.lang.invoke.MethodHandles;
 
-import static com.which.forensics.constants.ForensicsConstants.CACHE_EXPIRY_TIME;
-import static com.which.forensics.constants.ForensicsConstants.NO_OF_API_CALLS;
+import static com.which.forensics.constants.ForensicsConstants.*;
 
 @RestController
 @Api(value = "Forensic APIs")
@@ -60,7 +59,7 @@ public class ForensicsDetailsController extends AbstractForensicsController {
         LOG.info("Start Directions API {}", DIRECTIONS);
         //Validate Email
         if(isEmptyString.apply(email)) {
-            throw new ValidationException(HttpStatus.BAD_REQUEST.value(),"Email is not present in the url");
+            throw new ValidationException(HttpStatus.BAD_REQUEST.value(),EMPTY_EMAIL_REQUEST_MESSAGE);
         }
         return ResponseEntity.ok(directionsService.getDirections());
     }
@@ -88,9 +87,17 @@ public class ForensicsDetailsController extends AbstractForensicsController {
         Integer noOfAPICalls = 0;
 
         if(isEmptyString.apply(email)) {
-            throw new ValidationException(HttpStatus.BAD_REQUEST.value(),"Email is not present in the url");
+            throw new ValidationException(HttpStatus.BAD_REQUEST.value(),EMPTY_EMAIL_REQUEST_MESSAGE);
         }
         // Check for the Cache size
+        validateNoOfAPICalls(noOfAPICalls);
+
+        return ResponseEntity.ok(locationService.getLocation(xCoordinate, yCoordinate));
+    }
+
+    /*This method validates the no of locations requests and returns error message.
+    Cache will be invalidated in 5 mins*/
+    private void validateNoOfAPICalls(Integer noOfAPICalls) {
         if(inMemoryCache.size() > 0) {
             noOfAPICalls = (Integer) inMemoryCache.get(NO_OF_API_CALLS);
         }
@@ -101,10 +108,9 @@ public class ForensicsDetailsController extends AbstractForensicsController {
 
         //Return error message when no of API calls reached to 5 times.
         if(noOfAPICalls > 5) {
-            throw new ValidationException(HttpStatus.TOO_MANY_REQUESTS.value(), "You have exceeded the maximum allowed requests.");
+            throw new ValidationException(HttpStatus.TOO_MANY_REQUESTS.value(), TOO_MANY_REQUESTS_MESSAGE);
         }
-
-        return ResponseEntity.ok(locationService.getLocation(xCoordinate, yCoordinate));
     }
+
 
 }
