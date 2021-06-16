@@ -1,9 +1,8 @@
 package com.which.forensics.exception;
 
-import lombok.*;
-import lombok.experimental.FieldDefaults;
+import lombok.Data;
+import lombok.ToString;
 
-@Getter @Setter
 @Data
 @ToString
 public class ValidationException extends RuntimeException {

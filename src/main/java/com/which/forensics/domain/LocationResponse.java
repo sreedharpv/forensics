@@ -18,5 +18,7 @@ public class LocationResponse implements Serializable {
 
     @JsonProperty
     String location;
+    @JsonProperty
+    String personFound;
 
 }

@@ -1,10 +1,10 @@
 XCoOrdinate,YCoOrdinate,Location,Present
-0,0,Moorgate,No
-1,0,Liverpool Street,No
-2,0,Baker Street,No
-2,1,London Bridge,No
-3,1,Greenwich,No
-3,2,Hounslow,No
-4,2,Croydon,No
-4,3,Westminster,No
+0,0,Moorgate,Not Found
+1,0,Liverpool Street,Not Found
+2,0,Baker Street,Not Found
+2,1,London Bridge,Not Found
+3,1,Greenwich,Not Found
+3,2,Hounslow,Not Found
+4,2,Croydon,Not Found
+4,3,Westminster,Not Found
 4,4,Hackney,Yes

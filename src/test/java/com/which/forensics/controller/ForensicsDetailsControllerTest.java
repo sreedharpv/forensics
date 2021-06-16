@@ -92,7 +92,7 @@ public class ForensicsDetailsControllerTest {
     @Test
     public void testLocationAPI_returnSuccess() throws Exception {
         //given
-        given(locationService.getLocation(anyString(), anyString())).willReturn(new LocationResponse("London"));
+        given(locationService.getLocation(anyString(), anyString())).willReturn(new LocationResponse("London", "Found"));
 
         //when
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/sridhar@abc.com/location/xValue/yValue")
@@ -108,7 +108,7 @@ public class ForensicsDetailsControllerTest {
     @Test
     public void testLocationAPIwith_NoEmail() throws Exception {
         //given
-        given(locationService.getLocation(anyString(), anyString())).willReturn(new LocationResponse("London"));
+        given(locationService.getLocation(anyString(), anyString())).willReturn(new LocationResponse("London", "found"));
 
         //when
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("//location/xValue/yValue")
@@ -156,7 +156,7 @@ public class ForensicsDetailsControllerTest {
     @Test
     public void testLocations_ExceedNoOfAttempts() throws Exception {
         //given
-        given(locationService.getLocation(anyString(), anyString())).willReturn(new LocationResponse("London"));
+        given(locationService.getLocation(anyString(), anyString())).willReturn(new LocationResponse("London", "Found"));
 
         //when
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/sridhar@abc.com/location/xValue/")
@@ -172,7 +172,7 @@ public class ForensicsDetailsControllerTest {
     @Test
     public void testForLocations_ValidAttempt() throws Exception {
         //given
-        given(locationService.getLocation(anyString(), anyString())).willReturn(new LocationResponse("London"));
+        given(locationService.getLocation(anyString(), anyString())).willReturn(new LocationResponse("London", "Found"));
 
         //when
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/sridhar@abc.com/location/xValue/")
@@ -188,7 +188,7 @@ public class ForensicsDetailsControllerTest {
     @Test
     public void testForLocations_EmptyLocations() throws Exception {
         //given
-        given(locationService.getLocation(anyString(), anyString())).willReturn(new LocationResponse(""));
+        given(locationService.getLocation(anyString(), anyString())).willReturn(new LocationResponse("", ""));
 
         //when
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/sridhar@abc.com/location/xValue/")

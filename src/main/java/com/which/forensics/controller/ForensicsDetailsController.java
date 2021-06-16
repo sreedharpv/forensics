@@ -23,7 +23,11 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.NotNull;
 import java.lang.invoke.MethodHandles;
+
+import static com.which.forensics.constants.ForensicsConstants.CACHE_EXPIRY_TIME;
+import static com.which.forensics.constants.ForensicsConstants.NO_OF_API_CALLS;
 
 @RestController
 @Api(value = "Forensic APIs")
@@ -38,7 +42,6 @@ public class ForensicsDetailsController extends AbstractForensicsController {
     @Autowired
     InMemoryCache inMemoryCache;
 
-
     /**
      * Method to return directions
      *
@@ -47,13 +50,18 @@ public class ForensicsDetailsController extends AbstractForensicsController {
      * @param authToken
      * @return DirectionsResponse
      */
+    @Validated
     @GetMapping(value = DIRECTIONS, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<DirectionsResponse> directions(HttpServletRequest request,
                                                          @ApiParam(value = "API to get directions")
-                                                         @PathVariable("email") String email,
+                                                         @PathVariable("email") @NotNull String email,
                                                          @RequestHeader(HttpHeaders.AUTHORIZATION) String authToken
     ) throws ForensicApplicationException {
         LOG.info("Start Directions API {}", DIRECTIONS);
+        //Validate Email
+        if(isEmptyString.apply(email)) {
+            throw new ValidationException(HttpStatus.BAD_REQUEST.value(),"Email is not present in the url");
+        }
         return ResponseEntity.ok(directionsService.getDirections());
     }
 
@@ -67,10 +75,11 @@ public class ForensicsDetailsController extends AbstractForensicsController {
      * @param authToken
      * @return LocationResponse
      */
+    @Validated
     @GetMapping(value = LOCATIONS, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<LocationResponse> location(HttpServletRequest request,
                                                      @ApiParam(value = "API to get location")
-                                                     @PathVariable("email") String email,
+                                                     @PathVariable("email") @NotNull String email,
                                                      @PathVariable("x") String xCoordinate,
                                                      @PathVariable("y") String yCoordinate,
                                                      @RequestHeader(HttpHeaders.AUTHORIZATION) String authToken
@@ -78,12 +87,15 @@ public class ForensicsDetailsController extends AbstractForensicsController {
         LOG.info("Start Directions API {}", LOCATIONS);
         Integer noOfAPICalls = 0;
 
-        // get the cached variable
+        if(isEmptyString.apply(email)) {
+            throw new ValidationException(HttpStatus.BAD_REQUEST.value(),"Email is not present in the url");
+        }
+        // Check for the Cache size
         if(inMemoryCache.size() > 0) {
-            noOfAPICalls = (Integer) inMemoryCache.get("noOfResourcecount");
+            noOfAPICalls = (Integer) inMemoryCache.get(NO_OF_API_CALLS);
         }
         //Cache expires after 5 mins
-        inMemoryCache.add("noOfResourcecount", ++noOfAPICalls, 300000L);
+        inMemoryCache.add(NO_OF_API_CALLS, ++noOfAPICalls, CACHE_EXPIRY_TIME);
 
         LOG.info("noOfCalls::{}, Size::{}", noOfAPICalls, inMemoryCache.size());
 

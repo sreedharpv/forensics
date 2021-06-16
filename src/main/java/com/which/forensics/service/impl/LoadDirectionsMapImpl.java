@@ -2,6 +2,8 @@ package com.which.forensics.service.impl;
 
 import com.which.forensics.domain.Directions;
 import com.which.forensics.domain.DirectionsResponse;
+import com.which.forensics.dto.Location;
+import com.which.forensics.dto.MapDetails;
 import com.which.forensics.exception.ForensicApplicationException;
 import com.which.forensics.service.LoadDirectionsMap;
 import org.slf4j.Logger;
@@ -33,10 +35,11 @@ public class LoadDirectionsMapImpl implements LoadDirectionsMap {
     @Inject
     ResourceLoader resourceLoader;
     DirectionsResponse directionsResponse;
+    List<Location> locationList;
+    List<MapDetails> mapDetailsList;
 
     private static final String DIRECTIONS_MAP_FILE_NAME = "classpath:directions_map.csv";
     private static final String CSV_FILE_SEPARATOR = ",";
-    private static final int CSV_FILE_COLUMNS = 4;
 
     /*
      * This method loads the CSV file only once during server start up
@@ -45,13 +48,19 @@ public class LoadDirectionsMapImpl implements LoadDirectionsMap {
     public void init() throws ForensicApplicationException {
         Resource resource = resourceLoader.getResource(DIRECTIONS_MAP_FILE_NAME);
         directionsResponse = new DirectionsResponse();
+        mapDetailsList = new ArrayList<MapDetails>();
+        List<Directions> directionsList = new ArrayList<Directions>();
+        locationList = new ArrayList<Location>();
         BufferedReader br = null;
-        List<Directions> list = new ArrayList<>();
         LOG.info("Loading the Data file");
         try{
             br = new BufferedReader(new InputStreamReader(resource.getInputStream()));
-            list = br.lines().skip(1).map(mapToItem).collect(Collectors.toList());
-            directionsResponse.setPositions(list);
+            mapDetailsList = br.lines().skip(1).map(mapToItem).collect(Collectors.toList());
+            for(MapDetails details: mapDetailsList) {
+                directionsList.add(new Directions(details.getXCoOrdinate(), details.getYCoOrdinate()));
+                locationList.add(new Location(details.getLocation(), details.getIsLocated()));
+            }
+            directionsResponse.setPositions(directionsList);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -59,18 +68,29 @@ public class LoadDirectionsMapImpl implements LoadDirectionsMap {
 
     }
 
-    private Function<String, Directions> mapToItem = (line) -> {
+    private Function<String, MapDetails> mapToItem = (line) -> {
 
         String[] position = line.split(CSV_FILE_SEPARATOR);// a CSV has comma separated lines
-        Directions direction = new Directions();
-        direction.setXCoOrdinate(position[0]);//<-- this is the first column in the csv file
-        direction.setYCoOrdinate(position[1]);
-
-        return direction;
+        MapDetails mapDetails = new MapDetails();
+        mapDetails.setXCoOrdinate(position[0]);//<-- this is the first column in the csv file
+        mapDetails.setYCoOrdinate(position[1]);
+        mapDetails.setLocation(position[2]);
+        mapDetails.setIsLocated(position[3]);
+        return mapDetails;
     };
 
     @Override
     public DirectionsResponse loadDirections() throws ForensicApplicationException {
         return directionsResponse;
+    }
+
+    @Override
+    public List<Location> loadLocations() throws ForensicApplicationException {
+        return locationList;
+    }
+
+    @Override
+    public List<MapDetails> getMapDetails() throws ForensicApplicationException {
+        return mapDetailsList;
     }
 }
